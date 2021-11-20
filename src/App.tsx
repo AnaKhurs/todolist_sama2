@@ -15,7 +15,6 @@ type AllTasksType = {
     [todoListsID1: string]: Array<TaskType>
 }
 
-
 function App() {
 
     const todoListsID1 = v1()
@@ -38,7 +37,6 @@ function App() {
         ],
     })
 
-
     const removeTask = (id: string, idTodolist: string) => {
         let tasks = allTasks[idTodolist]
         let filteredRemoveTasks = tasks.filter((t) => t.id !== id);
@@ -53,7 +51,6 @@ function App() {
             setAllTasks({...allTasks})
         }
     }
-
 
     const changeFilter = (value: FilterValueType, idTodolist: string) => {
         let todolist = todoLists.find(tl => tl.id === idTodolist)
@@ -83,6 +80,22 @@ function App() {
         delete allTasks[idTodolist]
     }
 
+    const onChangeTitleTask = (tId: string, newTitle: string, idTodolist: string) => {
+        const changeTask = allTasks[idTodolist].find(t => t.id === tId)
+        if (changeTask) {
+            changeTask.title = newTitle
+            setAllTasks({...allTasks})
+        }
+    }
+
+    const onChangeTodolistTitle = (newTitle:string, idTodolist:string) => {
+        let todolist = todoLists.find(tl => tl.id === idTodolist)
+        if (todolist) {
+            todolist.title = newTitle
+            setTodoLists([...todoLists])
+        }
+    }
+
     return (
         <div className="App">
             <AddItemForm addItem={addTodolist}/>
@@ -106,6 +119,8 @@ function App() {
                                          changeTaskChecked={changeTaskChecked}
                                          filter={tl.filter}
                                          removeTodolist={removeTodolist}
+                                         onChangeTitleTask={onChangeTitleTask}
+                                         onChangeTodolistTitle={onChangeTodolistTitle}
                         />
                     }
                 )

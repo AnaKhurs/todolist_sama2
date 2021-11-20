@@ -2,6 +2,7 @@ import React from 'react';
 import {FilterValueType} from "./App";
 import './Todolist.css';
 import {AddItemForm} from "./components/AddItemForm";
+import {EditableSpan} from "./components/EditableSpan";
 
 export type TaskType = {
     id: string
@@ -19,6 +20,8 @@ type PropsType = {
     filter: FilterValueType
     idTodolist: string
     removeTodolist: (idTodolist: string) => void
+    onChangeTitleTask: (tId: string, newTitle: string, idTodolist: string) => void
+    onChangeTodolistTitle: (newTitle: string, idTodolist: string) => void
 }
 
 export function Todolist(props: PropsType) {
@@ -44,21 +47,32 @@ export function Todolist(props: PropsType) {
         props.addTask(title, props.idTodolist)
     }
 
+    const onChangeTodolistTitle = (newTitle: string) => {
+        props.onChangeTodolistTitle(newTitle, props.idTodolist)
+    }
+
 
     return <div>
-        <h3>{props.title}
+        <h3><EditableSpan title={props.title} onChangeTitle={onChangeTodolistTitle}/>
             <button onClick={clickDeleteTodoList}>x</button>
         </h3>
         <AddItemForm addItem={addTask}/>
 
         <ul>
             {props.tasks.map((t) => {
+
+                const onChangeTaskTitle = (newTitle: string) => {
+                    props.onChangeTitleTask(t.id, newTitle, props.idTodolist)
+                }
+
                 return <li key={t.id} className={t.isDone ? 'isDone' : ''}>
                     <input onChange={(e) => onChangeCheckedHandler(e.currentTarget.checked, t.id)} type="checkbox"
-                           checked={t.isDone}/> <span>{t.title}</span>
+                           checked={t.isDone}/>
+                    <EditableSpan title={t.title} onChangeTitle={onChangeTaskTitle}/>
                     <button onClick={() => clickRemoveTask(t.id)}>x</button>
                 </li>
-            })}
+            })
+            }
         </ul>
         <div>
             <button className={props.filter === 'all' ? "activeFilter" : ""} onClick={() => clickFilter('all')}>All
@@ -72,5 +86,4 @@ export function Todolist(props: PropsType) {
         </div>
     </div>
 }
-
 
